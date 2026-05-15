@@ -254,13 +254,17 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-10 pt-6 border-t border-stone-900">
                     <div>
                         <p class="text-[12px] uppercase text-stone-600 font-bold mb-2">Gustos</p>
-                        <p class="text-stone-200 italic font-bold leading-relaxed">
+                        <p
+                            class="text-stone-200 italic font-bold leading-relaxed whitespace-pre-wrap"
+                        >
                             {{ vestaState.form.gustos }}
                         </p>
                     </div>
                     <div>
                         <p class="text-[12px] uppercase text-stone-600 font-bold mb-2">Disgustos</p>
-                        <p class="text-stone-200 italic font-bold leading-relaxed">
+                        <p
+                            class="text-stone-200 italic font-bold leading-relaxed whitespace-pre-wrap"
+                        >
                             {{ vestaState.form.disgustos }}
                         </p>
                     </div>
@@ -383,9 +387,12 @@ const generatePDF = async () => {
     border-right-width: 2px !important;
 }
 
-.export-mode-forced .grid-cols-2.md\:grid-cols-4,
-.export-mode-forced .grid-cols-3.md\:grid-cols-2 {
+.export-mode-forced .grid-cols-2.md\:grid-cols-4 {
     grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+}
+
+.export-mode-forced .grid-cols-3.md\:grid-cols-2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
 }
 
 .export-mode-forced .border-t-2.md\:border-t-0 {
