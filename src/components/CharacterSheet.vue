@@ -47,7 +47,7 @@
                             class="w-full aspect-[2/3] border-b-2 border-[#1c1917] overflow-hidden bg-stone-900"
                         >
                             <img
-                                :src="vestaState.form.imagen || '/placeholder.jpg'"
+                                :src="vestaState.form.imagen"
                                 class="w-full h-full object-cover grayscale contrast-125"
                             />
                         </div>

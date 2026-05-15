@@ -4,8 +4,8 @@ import vue from '@astrojs/vue';
 import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig({
-    // site: 'https://tu-usuario.github.io',
-    // base: '/nombre-del-repo',
+    site: 'https://cTapiaDev.github.io',
+    base: '/vesta-system',
     integrations: [vue()],
     vite: {
         plugins: [tailwindcss()],
