@@ -292,69 +292,104 @@ import VestaButton from './ui/VestaButton.vue';
 import StatBox from './ui/StatBox.vue';
 
 const isExporting = ref(false);
+const isGenerating = ref(false);
 const maestriaInfo = computed(() => MAESTRIAS_DATA[vestaState.form.maestria]);
 const sendaInfo = computed(() => SENDAS_DATA[vestaState.form.senda]);
 
 const generatePDF = async () => {
-    isExporting.value = true;
+    isGenerating.value = true;
+    await document.fonts.ready;
 
-    setTimeout(async () => {
-        try {
-            const p1 = document.getElementById('pdf-pagina-1');
-            const p2 = document.getElementById('pdf-pagina-2');
+    const ghost = document.createElement('div');
+    ghost.style.cssText = `
+        position: absolute; top: 0; left: -10000px; 
+        width: 1000px; background: #050505; display: block;
+    `;
+    document.body.appendChild(ghost);
 
-            const captureOptions = {
-                width: 1000,
-                style: {
-                    width: '1000px',
-                    transform: 'none', // Evita que zoom del móvil interfiera
-                },
-                pixelRatio: 2,
-                backgroundColor: '#050505',
-                cacheBust: true,
-            };
+    try {
+        const p1 = document.getElementById('pdf-pagina-1');
+        const p2 = document.getElementById('pdf-pagina-2');
 
-            const img1 = await toPng(p1, captureOptions);
-            const img2 = await toPng(p2, captureOptions);
+        const c1 = p1.cloneNode(true);
+        const c2 = p2.cloneNode(true);
 
-            const pdf = new jsPDF('p', 'mm', 'a4');
-            const pdfWidth = pdf.internal.pageSize.getWidth();
-            const pdfHeight = pdf.internal.pageSize.getHeight();
+        c1.classList.add('export-mode-forced');
+        c2.classList.add('export-mode-forced');
 
-            const drawBlackBg = (doc) => {
-                doc.setFillColor(5, 5, 5);
-                doc.rect(0, 0, pdfWidth, pdfHeight, 'F');
-            };
+        ghost.appendChild(c1);
+        ghost.appendChild(c2);
 
-            // Hoja 1
-            drawBlackBg(pdf);
-            const props1 = pdf.getImageProperties(img1);
-            const h1 = (props1.height * pdfWidth) / props1.width;
-            pdf.addImage(img1, 'PNG', 0, 0, pdfWidth, h1);
+        const opts = {
+            width: 1000,
+            pixelRatio: 3,
+            backgroundColor: '#050505',
+            cacheBust: true,
+        };
 
-            // Hoja 2
-            pdf.addPage();
-            drawBlackBg(pdf);
-            const props2 = pdf.getImageProperties(img2);
-            const h2 = (props2.height * pdfWidth) / props2.width;
-            pdf.addImage(img2, 'PNG', 0, 0, pdfWidth, h2);
+        await new Promise((r) => setTimeout(r, 600));
 
-            pdf.save(`Vesta_${vestaState.form.nombre || 'Personaje'}.pdf`);
-        } catch (e) {
-            console.error('Error capturando PDF:', e);
-        } finally {
-            isExporting.value = false;
-        }
-    }, 300);
+        const img1 = await toPng(c1, opts);
+        const img2 = await toPng(c2, opts);
+
+        const pdf = new jsPDF('p', 'mm', 'a4');
+        const pdfWidth = pdf.internal.pageSize.getWidth();
+        const pdfHeight = pdf.internal.pageSize.getHeight();
+        const bg = (d) => {
+            d.setFillColor(5, 5, 5);
+            d.rect(0, 0, pdfWidth, pdfHeight, 'F');
+        };
+
+        bg(pdf);
+        const h1 =
+            (pdf.getImageProperties(img1).height * pdfWidth) / pdf.getImageProperties(img1).width;
+        pdf.addImage(img1, 'PNG', 0, 0, pdfWidth, h1, undefined, 'FAST');
+
+        pdf.addPage();
+        bg(pdf);
+        const h2 =
+            (pdf.getImageProperties(img2).height * pdfWidth) / pdf.getImageProperties(img2).width;
+        pdf.addImage(img2, 'PNG', 0, 0, pdfWidth, h2, undefined, 'FAST');
+
+        pdf.save(`Vesta_Ficha_${vestaState.form.nombre || 'Heroe'}.pdf`);
+    } catch (e) {
+        console.error('Error:', e);
+    } finally {
+        document.body.removeChild(ghost);
+        isGenerating.value = false;
+    }
 };
 </script>
 
 <style scoped>
-.export-fix {
+.export-mode-forced {
     width: 1000px !important;
-    max-width: 1000px !important;
-    position: absolute;
-    left: -9999px;
+    font-family: ui-serif, Georgia, Cambria, 'Times New Roman', Times, serif !important;
+}
+
+.export-mode-forced .grid-cols-1.md\:grid-cols-2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    display: grid !important;
+}
+
+.export-mode-forced .flex-col.md\:flex-row {
+    flex-direction: row !important;
+    display: flex !important;
+}
+
+.export-mode-forced .w-full.md\:w-\[320px\] {
+    width: 320px !important;
+    border-bottom-width: 0px !important;
+    border-right-width: 2px !important;
+}
+
+.export-mode-forced .grid-cols-2.md\:grid-cols-4,
+.export-mode-forced .grid-cols-3.md\:grid-cols-2 {
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+}
+
+.export-mode-forced .border-t-2.md\:border-t-0 {
+    border-top-width: 0px !important;
 }
 
 .vesta-pdf-container {
