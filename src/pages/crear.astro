@@ -1,0 +1,40 @@
+---
+import FichaOrchestrator from '../components/FichaOrchestrator.vue';
+import VestaHeading from '../components/ui/VestaHeading.vue';
+import '../styles/global.css';
+---
+
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Vesta</title>
+  </head>
+  <body class="bg-stone-950 text-stone-300 min-h-screen selection:bg-red-900 selection:text-white bg-[url('https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=2000&auto=format&fit=crop')] bg-cover bg-center bg-fixed">
+    
+    <div class="min-h-screen bg-stone-950/85 backdrop-blur-sm pb-20 flex flex-col">
+      
+        <header class="sticky top-0 z-50 bg-[#0a0a0a]/90 backdrop-blur-md border-b border-red-900/30 p-4 mb-12 shadow-lg shadow-black/50">
+            <div class="max-w-4xl mx-auto flex justify-between items-center">
+                <VestaHeading 
+                    tag="span" 
+                    size="sm" 
+                    class="mb-0! border-none! py-0! text-red-900 drop-shadow-[0_0_8px_rgba(127,29,29,0.8)]"
+                >
+                    Ficha de Personaje
+                </VestaHeading>
+                
+                <a href="/" class="text-xs uppercase hover:text-red-500 tracking-widest text-stone-500 transition-colors">
+                    Abandonar
+                </a>
+            </div>
+        </header>
+
+      <main class="px-2 sm:px-4 w-full flex-1 flex flex-col">
+        <FichaOrchestrator client:load />
+      </main>
+      
+    </div>
+  </body>
+</html>
