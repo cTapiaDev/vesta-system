@@ -186,6 +186,39 @@
                             <p class="text-[15px] text-stone-300 italic leading-relaxed">
                                 {{ vestaState.form.personalidad }}
                             </p>
+
+                            <div class="grid grid-cols-2 gap-6 pt-4 border-t border-stone-900/50">
+                                <div>
+                                    <p
+                                        class="text-[10px] uppercase text-stone-600 font-bold mb-1 tracking-widest"
+                                    >
+                                        Virtudes
+                                    </p>
+                                    <p class="text-[13px] text-stone-400 italic leading-snug">
+                                        {{
+                                            vestaState.virtudesElegidas &&
+                                            vestaState.virtudesElegidas.length
+                                                ? vestaState.virtudesElegidas.join(', ')
+                                                : 'Ninguna'
+                                        }}
+                                    </p>
+                                </div>
+                                <div>
+                                    <p
+                                        class="text-[10px] uppercase text-[#7f1d1d] font-bold mb-1 tracking-widest"
+                                    >
+                                        Vicios
+                                    </p>
+                                    <p class="text-[13px] text-stone-400 italic leading-snug">
+                                        {{
+                                            vestaState.viciosElegidos &&
+                                            vestaState.viciosElegidos.length
+                                                ? vestaState.viciosElegidos.join(', ')
+                                                : 'Ninguno'
+                                        }}
+                                    </p>
+                                </div>
+                            </div>
                         </div>
 
                         <div class="grid grid-cols-1 md:grid-cols-2 flex-1 bg-[#1c1917]">
