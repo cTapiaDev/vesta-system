@@ -272,12 +272,12 @@
             <VestaButton
                 text="Descargar Ficha PDF"
                 @click="generatePDF"
-                class="w-full !py-8 !text-2xl"
+                class="w-full py-8! text-2xl!"
             />
             <VestaButton
                 text="Volver a los Datos"
                 @click="vestaState.currentStep = 4"
-                class="w-full !bg-stone-900 !text-stone-500"
+                class="w-full bg-stone-900! text-stone-500!"
             />
         </div>
     </div>
@@ -295,28 +295,34 @@ const isExporting = ref(false);
 const maestriaInfo = computed(() => MAESTRIAS_DATA[vestaState.form.maestria]);
 const sendaInfo = computed(() => SENDAS_DATA[vestaState.form.senda]);
 
-/**
- * 🟢 Generación de PDF Paginada (2 Hojas Negras)
- */
 const generatePDF = async () => {
     isExporting.value = true;
 
-    // Pequeño delay para que el DOM se ensanche a 1000px antes de capturar
     setTimeout(async () => {
         try {
             const p1 = document.getElementById('pdf-pagina-1');
             const p2 = document.getElementById('pdf-pagina-2');
 
-            // Captura de alta fidelidad
-            const img1 = await toPng(p1, { pixelRatio: 2, backgroundColor: '#050505' });
-            const img2 = await toPng(p2, { pixelRatio: 2, backgroundColor: '#050505' });
+            const captureOptions = {
+                width: 1000,
+                style: {
+                    width: '1000px',
+                    transform: 'none', // Evita que zoom del móvil interfiera
+                },
+                pixelRatio: 2,
+                backgroundColor: '#050505',
+                cacheBust: true,
+            };
+
+            const img1 = await toPng(p1, captureOptions);
+            const img2 = await toPng(p2, captureOptions);
 
             const pdf = new jsPDF('p', 'mm', 'a4');
             const pdfWidth = pdf.internal.pageSize.getWidth();
             const pdfHeight = pdf.internal.pageSize.getHeight();
 
             const drawBlackBg = (doc) => {
-                doc.setFillColor(5, 5, 5); // Negro #050505
+                doc.setFillColor(5, 5, 5);
                 doc.rect(0, 0, pdfWidth, pdfHeight, 'F');
             };
 
@@ -333,22 +339,22 @@ const generatePDF = async () => {
             const h2 = (props2.height * pdfWidth) / props2.width;
             pdf.addImage(img2, 'PNG', 0, 0, pdfWidth, h2);
 
-            pdf.save(`Vesta_Ficha_${vestaState.form.nombre || 'Personaje'}.pdf`);
+            pdf.save(`Vesta_${vestaState.form.nombre || 'Personaje'}.pdf`);
         } catch (e) {
-            console.error('Error:', e);
+            console.error('Error capturando PDF:', e);
         } finally {
             isExporting.value = false;
         }
-    }, 150);
+    }, 300);
 };
 </script>
 
 <style scoped>
-/* 🟢 Arreglo Responsivo: El stack solo ocurre si NO estamos exportando */
-@media (max-width: 768px) {
-    .vesta-pdf-container:not(.export-mode) {
-        width: 100% !important;
-    }
+.export-fix {
+    width: 1000px !important;
+    max-width: 1000px !important;
+    position: absolute;
+    left: -9999px;
 }
 
 .vesta-pdf-container {
